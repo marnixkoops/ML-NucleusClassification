@@ -2,7 +2,7 @@
 ###### Comparison of breast cancer classification performance using ML algorithms `12/2016`
 
 # DATA
-The data can be found online in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) and consists of 569 observations with 32 variables. The variables are ID, diagnosis, and ten real-valued features computed for each cell nucleus: `radius` (mean of distances from center to points on the perimeter), `texture` (standard deviation of gray-scale values), `perimeter`, `area`, `smoothness` (local variation in radius lengths), `compactness` (perimeter2/area-1), `concavity` (severity of concave portions of the contour), `concave points` (number of concave portions of the contour), `symmetry` and `fractal dimension` (coastline approximation-1) 
+The data can be found online in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) and consists of 569 observations with 32 variables. The variables are ID, diagnosis, and ten real-valued features computed for each cell nucleus: `radius` (mean of distances from center to points on the perimeter), `texture` (standard deviation of gray-scale values), `perimeter`, `area`, `smoothness` (local variation in radius lengths), `compactness` (perimeter^2/area-1), `concavity` (severity of concave portions of the contour), `concave points` (number of concave portions of the contour), `symmetry` and `fractal dimension` (coastline approximation-1) 
 
 Of all these measures the mean, standard error and ‘worst’ or largest of these features were computed for each image. Worst is calculated as the average of the 3 largest measures. This results in 30 variables for each observation. All feature values are recoded with four significant digits. The dataset has no missing attribute values so no preparation steps or cleaning is required beforehand. Since the dependent variable, diagnosis, consists of two possible outcomes this is a classification problem. Classes are not completely equal in distribution with 357 benign and 212 malignant observations. 
 
@@ -19,7 +19,13 @@ A second issue is how to choose the position of the initial starting centroids, 
 30 variables are currently used to find structure in the data. Looking at the measures used as variables, intuitively there will be correlations. This is confirmed by plotting a correlogram, **figure 2** displays a selection of some correlated measures. This means not all variables will be of equal importance in predicting the diagnosis. To reduce variables and focus on the important variables we can apply a PCA. After performing a PCA we see the first 2 components together explain 63.3% of the variance in the data. Based on a scree-plot we conclude in using the first 3 PCA’s that together explain 72.6%. Many variables appear to contribute in the first 3 principal components but worst radius, worst perimeter and mean area are the most important.
 
 ![](plots/kmeans_corr.png)
-! K-means table
+
+###### Table 1: K-Means methods confusion table
+|               | K-Means    |               | Factorial K-Means |               | Reduced K-Means |               |
+|---------------|------------|---------------|-------------------|---------------|-----------------|---------------|
+|               | **Benign** | **Malignant** | **Benign**        | **Malignant** | **Benign**      | **Malignant** |
+| **Cluster 1** | 1          | 130           | 220               | 122           | 343             | 37            |
+| **Cluster 2** | 356        | 82            | 137               | 90            | 14              | 175           |
 
 ### `FACTORIAL K-MEANS`
 
@@ -47,7 +53,18 @@ Performance can be improved by optimizing (tuning) the parameters used in the mo
 
 To compare models, the focus is on prediction accuracy. An overview of the abovementioned models is seen in **table 2**. None of the tested models display ‘bad’ results. The conditional tree performs the worst by wrongly classifying 17 observations. RF performs slightly better than Adaboost, which is also reflected in a higher accuracy and AUC. XGBoost proves the most accurate in all used performance measures. The sensitivity is lower than the specificity in all models. This is most likely caused by the train sample containing less observations of the malignant class, leading to increased difficulty of predicting this class in the test sample compared to benign observations. In our RF model the OOB error is 4.59% this implies 95.41% accuracy and is almost identical to the independently calculated hit rate.
 
-! table
+###### Table 2: Prediction results of tree based methods
+|                 | Conditional Tree |               | Random Forest |               | AdaBoost   |               | XGBoost    |               |
+|-----------------|------------------|---------------|---------------|---------------|------------|---------------|------------|---------------|
+|                 | *REFERENCE*        |               |               |               |            |               |            |               |
+| *PREDICTION*      | **Benign**       | **Malignant** | **Benign**    | **Malignant** | **Benign** | **Malignant** | **Benign** | **Malignant** |
+| **Benign**      | 101              | 5             | 112           | 7             | 111        | 7             | 113        | 4             |
+| **Malignant**   | 12               | 59            | 1             | 57            | 2          | 57            | 0          | 61            |
+|                 |                  |               |               |               |            |               |            |               |
+| Accuracy (%)    | 90.40            |               | 95.48         |               | 94.92      |               | 97.74      |               |
+| Sensitivity (%) | 92.19            |               | 89.06         |               | 89.06      |               | 93.75      |               |
+| Specificity (%) | 89.38            |               | 99.12         |               | 98.23      |               | 100.0      |               |
+| AUC             | 0.9078           |               | 0.9409        |               | 0.9287     |               | 0.9688     |               |
 
 As we are interested in finding which measures are important in correctly predicting diagnosis we can look at variable importance in each model. Importance is determined by calculating the average decrease in Gini index due to splitting. FIGURE 5 shows a scaled comparison of the top 10 most important variables for each model. The same variables appear in the top 5 of every model except for XGBoost. Most noticeable is the significant drop in importance after the first two variables of XGBoost compared to all other models where the variable importance is much more equally distributed. Measure of worst perimeter is the most important in all models except for RF where it is second. Furthermore, concavity measures of the nucleus are also an important variable in all models. As follow-up the least important variable(s) can be removed to see if this has a positive impact on the predictions and this step can be repeated.
 
@@ -55,13 +72,47 @@ As we are interested in finding which measures are important in correctly predic
 
 Further analysis of the RF and XGBoost model reveals that good prediction results can be obtained by including only a selection of the measures, displayed in **table 4**. Retuning with repeated 10-fold cross validation and predicting diagnosis leads to the results shown in **table 3**. Although the performance in both models is slightly lower than using all measures, this provides valuable information regarding which variables are most significant in accurately determining the diagnosis of future patients.
 
-! table
+###### Table 3: Features included in parsimonious models
+| Random Forest 2        | XGBoost 2             |
+|------------------------|-----------------------|
+| *FEATURES*             | *FEATURES             |
+| `worst perimeter`      | `worst perimeter`     |
+| `mean concave points`  | `mean concave points` |
+| `worst area`           | `worst area`          |
+| `radius worst`         | `mean concavity`      |
+| `worst concave points` | `worst texture`       |
+
+###### Table 4: Prediction results of more parsimonious models
+|                 | Random Forest 2 |               | XGBoost 2  |               |
+|-----------------|-----------------|---------------|------------|---------------|
+|                 | *REFERENCE*     |               |            |               |
+| *PREDICTION*    | **Benign**      | **Malignant** | **Benign** | **Malignant** |
+| **Benign**      | 109             | 10            | 112        | 4             |
+| **Malignant**   | 4               | 54            | 1          | 60            |
+|                 |                 |               |            |               |
+| Accuracy (%)    | 92.02           |               | 97.18      |               |
+| Sensitivity (%) | 84.38           |               | 93.75      |               |
+| Specificity (%) | 96.46           |               | 99.12      |               |
+| AUC             | 0.9042          |               | 0.9643     |               |
+
+
 
 ### `SUPPORT VECTOR MACHINE`
 
 As final approach we classify our observations using a support vector machine (SVM). This method could work well since we have a binary classification problem. The idea is to find the best split between the benign and malignant class. This is done by non-linearly mapping the observations into a high dimensional feature space in which the best linear split is determined called the optimal separating hyperplane. Actual calculations in the higher-dimensional space are avoided by the “kernel trick”. Several kernels are available such as polynomial and radial basis function (RBF). Choosing the correct kernel is not straightforward, different ones are compared to see which yields the best performance on this dataset. Results can again be improved by tuning the (hyper)parameters in the model. The performance using the following kernels are compared; linear, polynomial, radial and sigmoid. The same training and test set as in the tree based methods is used. For each method grid search in combination with 10-fold cross-validation is applied to find the optimal value for `epsilon`, `cost` (C) and `gamma`. tuning was performed only on the training set. **table 3** shows a comparison of the SVM predictions. All kernels yield comparable results and prove to have high prediction accuracy. Sigmoid has the best performance with an accuracy of 97.18% highest sensitivity, specificity and AUC, all just below XGBoost.
 
-! Table
+###### Table 5: Prediction results of Support Vector Machines
+|                 | Linear Kernel |               | Polynomial Kernel |               | Radial Kernel |               | Sigmoid Kernel |               |
+|-----------------|---------------|---------------|-------------------|---------------|---------------|---------------|----------------|---------------|
+|                 | *REFERENCE*   |               |                   |               |               |               |                |               |
+| *PREDICTION*    | **Benign**    | **Malignant** | **Benign**        | **Malignant** | **Benign**    | **Malignant** | **Benign**     | **Malignant** |
+| **Benign**      | 112           | 5             | 113               | 6             | 113           | 6             | 113            | 5             |
+| **Malignant**   | 1             | 59            | 1                 | 58            | 0             | 58            | 0              | 59            |
+|                 |               |               |                   |               |               |               |                |               |
+| Accuracy (%)    | 96.61         |               | 95.05             |               | 96.61         |               | 97.18          |               |
+| Sensitivity (%) | 92.19         |               | 90.62             |               | 90.62         |               | 92.19          |               |
+| Specificity (%) | 99.12         |               | 99.12             |               | 100.0         |               | 100.0          |               |
+| AUC             | 0.9565        |               | 0.9487            |               | 0.9531        |               | 0.9609         |               |
 
 ## SUMMARY
 
