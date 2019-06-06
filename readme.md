@@ -3,7 +3,7 @@
 
 # DATA
 
-###### Image of a malignant cell nucleus obtained by Fine Needle Aspiration (FNA)
+###### Image of malignant cell nucleus obtained by Fine Needle Aspiration (FNA)
 ![](plots/malignant_cell.png)
 
 The data can be found online in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) and consists of 569 observations with 32 variables. The variables are ID, diagnosis, and ten real-valued features computed for each cell nucleus: `radius` (mean of distances from center to points on the perimeter), `texture` (standard deviation of gray-scale values), `perimeter`, `area`, `smoothness` (local variation in radius lengths), `compactness` (perimeter^2/area-1), `concavity` (severity of concave portions of the contour), `concave points` (number of concave portions of the contour), `symmetry` and `fractal dimension` (coastline approximation-1) 
