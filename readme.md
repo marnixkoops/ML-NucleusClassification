@@ -2,6 +2,10 @@
 ###### Classification of breast cancer cell nucleus images using ML algorithms
 
 # DATA
+
+![](plots/malignant_cell.png)
+###### Image of a malignant cell nucleus obtained by Fine Needle Aspiration (FNA)
+
 The data can be found online in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) and consists of 569 observations with 32 variables. The variables are ID, diagnosis, and ten real-valued features computed for each cell nucleus: `radius` (mean of distances from center to points on the perimeter), `texture` (standard deviation of gray-scale values), `perimeter`, `area`, `smoothness` (local variation in radius lengths), `compactness` (perimeter^2/area-1), `concavity` (severity of concave portions of the contour), `concave points` (number of concave portions of the contour), `symmetry` and `fractal dimension` (coastline approximation-1) 
 
 Of all these measures the mean, standard error and ‘worst’ or largest of these features were computed for each image. Worst is calculated as the average of the 3 largest measures. This results in 30 variables for each observation. All feature values are recoded with four significant digits. The dataset has no missing attribute values so no preparation steps or cleaning is required beforehand. Since the dependent variable, diagnosis, consists of two possible outcomes this is a classification problem. Classes are not completely equal in distribution with 357 benign and 212 malignant observations. 
