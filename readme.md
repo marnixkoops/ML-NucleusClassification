@@ -19,7 +19,7 @@ A second issue is how to choose the position of the initial starting centroids, 
 
 30 variables are currently used to find structure in the data. Looking at the measures used as variables, intuitively there will be correlations. This is confirmed by plotting a correlogram, FIGURE 2 displays a selection of some correlated measures. This means not all variables will be of equal importance in predicting the diagnosis. To reduce variables and focus on the important variables we can apply a PCA. After performing a PCA we see the first 2 components together explain 63.3% of the variance in the data. Based on a scree-plot we conclude in using the first 3 PCA’s that together explain 72.6%. Many variables appear to contribute in the first 3 principal components but worst radius, worst perimeter and mean area are the most important.
 
-! K-means plot
+![](plots/kmeans.png) ![](plots/corrplot.png)
 ! K-means table
 
 ### `FACTORIAL K-MEANS`
@@ -32,7 +32,7 @@ It is clear from the clustering plot and the grouping results that FKM fails to 
 
 An alternative to FKM is Reduced K-Means (RKM). Timmerman claims that RKM is of use if FKM fails (and vice versa). A simulation by shows that an increase in subspace residuals relative to complement residuals decreases performance of FKM but increases performance of RKM (Timmerman). I am not sure If that is the case here but I could potentially explain the large difference in performance between FKM and RKM. The clustering obtained by FKM is plotted in FIGURE 3 and again TABLE 1 show a comparison of the results with the actual diagnosis. Based on the confusion RKM yields the best result in identifying a clustering structure where the benign and malignant observations are seen as two separate classes.
 
-! FKM, RKM plot
+![](plots/FKM.png) ![](plots/RKM.png)
 
 ### `TREE BASED SUPERVISED LEARNING`
 
@@ -52,7 +52,7 @@ To compare models, the focus is on prediction accuracy. An overview of the above
 
 As we are interested in finding which measures are important in correctly predicting diagnosis we can look at variable importance in each model. Importance is determined by calculating the average decrease in Gini index due to splitting. FIGURE 5 shows a scaled comparison of the top 10 most important variables for each model. The same variables appear in the top 5 of every model except for XGBoost. Most noticeable is the significant drop in importance after the first two variables of XGBoost compared to all other models where the variable importance is much more equally distributed. Measure of worst perimeter is the most important in all models except for RF where it is second. Furthermore, concavity measures of the nucleus are also an important variable in all models. As follow-up the least important variable(s) can be removed to see if this has a positive impact on the predictions and this step can be repeated.
 
-! var importance plots
+![](plots/imps.png)
 
 Further analysis of the RF and XGBoost model reveals that good prediction results can be obtained by including only a selection of the measures, displayed in TABLE 4. Retuning with repeated 10-fold cross validation and predicting diagnosis leads to the results shown in TABLE 3. Although the performance in both models is slightly lower than using all measures, this provides valuable information regarding which variables are most significant in accurately determining the diagnosis of future patients.
 
