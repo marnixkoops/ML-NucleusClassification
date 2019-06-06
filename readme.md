@@ -1,6 +1,5 @@
 # Cell Nucleus Diagnosis
-###### Comparison of breast cancer classification performance using ML algorithms
-`12/2016`
+###### Comparison of breast cancer classification performance using ML algorithms `12/2016`
 
 # DATA
 The data can be found online in the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) and consists of 569 observations with 32 variables. The variables are ID, diagnosis, and ten real-valued features computed for each cell nucleus: `radius` (mean of distances from center to points on the perimeter), `texture` (standard deviation of gray-scale values), `perimeter`, `area`, `smoothness` (local variation in radius lengths), `compactness` (perimeter2/area-1), `concavity` (severity of concave portions of the contour), `concave points` (number of concave portions of the contour), `symmetry` and `fractal dimension` (coastline approximation-1) 
@@ -19,7 +18,7 @@ A second issue is how to choose the position of the initial starting centroids, 
 
 30 variables are currently used to find structure in the data. Looking at the measures used as variables, intuitively there will be correlations. This is confirmed by plotting a correlogram, **figure 2** displays a selection of some correlated measures. This means not all variables will be of equal importance in predicting the diagnosis. To reduce variables and focus on the important variables we can apply a PCA. After performing a PCA we see the first 2 components together explain 63.3% of the variance in the data. Based on a scree-plot we conclude in using the first 3 PCA’s that together explain 72.6%. Many variables appear to contribute in the first 3 principal components but worst radius, worst perimeter and mean area are the most important.
 
-![](plots/kmeans.png) ![](plots/corrplot.png)
+![](plots/kmeans_corr.png)
 ! K-means table
 
 ### `FACTORIAL K-MEANS`
@@ -32,7 +31,7 @@ It is clear from the clustering plot and the grouping results that FKM fails to 
 
 An alternative to FKM is Reduced K-Means (RKM). Timmerman claims that RKM is of use if FKM fails (and vice versa). A simulation by shows that an increase in subspace residuals relative to complement residuals decreases performance of FKM but increases performance of RKM *(Timmerman)*. I am not sure if that is the case here but it could potentially explain the large difference in performance between FKM and RKM. The clustering obtained by FKM is plotted in **figure 3** and again **table 1** show a comparison of the results with the actual diagnosis. Based on the confusion RKM yields the best result in identifying a clustering structure where the benign and malignant observations are seen as two separate classes.
 
-![](plots/FKM.png) ![](plots/RKM.png)
+![](plots/fkm_rkm.png)
 
 ### `TREE BASED SUPERVISED LEARNING`
 
