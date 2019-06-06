@@ -75,7 +75,7 @@ Further analysis of the RF and XGBoost model reveals that good prediction result
 ###### Table 3: Features included in parsimonious models
 | Random Forest 2        | XGBoost 2             |
 |------------------------|-----------------------|
-| *FEATURES*             | *FEATURES             |
+| *FEATURES*             | *FEATURES*            |
 | `worst perimeter`      | `worst perimeter`     |
 | `mean concave points`  | `mean concave points` |
 | `worst area`           | `worst area`          |
